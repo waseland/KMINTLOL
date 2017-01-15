@@ -67,8 +67,10 @@ void Beekeeper::_target_random_neighbour()
 	vector<Vertex*> neighbours = this->_graph->get_vertex_neighbours(this->current_vertex);
 
 	if (neighbours.size() > 0) {
-		int index = rand() % (neighbours.size() - 1);
+		int index = rand() % (neighbours.size());
 		this->target_vertex = neighbours[index];
+		this->_graph->target = this->target_vertex;
+		this->target_position = { (double)target_vertex->getXCoord(), (double)target_vertex->getYCoord() };
 	}
 }
 
@@ -92,6 +94,18 @@ void Beekeeper::_target_vertex(Vertex* v)
 void Beekeeper::_arrive_at_target(Vertex* v)
 {
 	this->current_vertex = v;
+}
+
+void Beekeeper::power_up()
+{
+	this->speed = this->power_up_speed;
+	this->SetTexture(mApplication->LoadTexture("super_beekeeper.png"));
+}
+
+void Beekeeper::remove_power_up()
+{
+	this->speed = this->usual_speed;
+	this->SetTexture(mApplication->LoadTexture("beekeeper.png"));
 }
 
 /// If there are no bees, a nullptr is returned

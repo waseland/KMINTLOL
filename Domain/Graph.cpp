@@ -1,4 +1,5 @@
 #include "Graph.h"
+#include "../Entities/BeekeeperPowerUp.h"
 
 Graph::Graph()
 {
@@ -13,12 +14,15 @@ Graph::Graph()
 			)
 		);
 	}
+	this->beekeeper_power_up = new BeekeeperPowerUp(*this);
+	this->fsm = new FSM(this->_beekeeper);
 }
 
 
 Graph::~Graph()
 {
 	delete this->_beekeeper;
+	delete this->beekeeper_power_up;
 }
 
 void Graph::addVertex(Vertex* vertex)
@@ -103,7 +107,6 @@ Vertex* Graph::get_vertex_closest_to_point(CoordinateDouble pos)
 vector<Vertex*> Graph::find_path(Graph& field, Vertex* start, Vertex* end)
 {
 	vector<Vertex*> path;
-
 	std::list<ConnectedVertex*> open_list;
 	std::list<ConnectedVertex*> closed_list;
 
@@ -196,13 +199,13 @@ ConnectedVertex* Graph::_make_astar_vertex(Vertex* vert, ConnectedVertex* parent
 	};
 
 	if (to_return == to_return->parent) {
-		throw "u dun goofed";
+		throw "Something is its own parent";
 	}
 
 	return to_return;
 }
 
-bool Graph::_contains_astar_vector_with_lower_total_cost(std::list<ConnectedVertex*>& haystack, ConnectedVertex& needle)
+bool Graph::_contains_astar_vector_with_lower_total_cost(std::list<ConnectedVertex*>& haystack, ConnectedVertex& needle)	
 {
 	for (ConnectedVertex* astar_vector : haystack) {
 		if (haystack.size() == 0) {
@@ -214,14 +217,6 @@ bool Graph::_contains_astar_vector_with_lower_total_cost(std::list<ConnectedVert
 				return true;
 			}
 		}
-
-		/*if (astar_vector->vertex->getXCoord() == needle.vertex->getXCoord()
-			&& astar_vector->vertex->getYCoord() == needle.vertex->getYCoord()) {
-
-			if (astar_vector->total_cost < needle.total_cost) {
-				return true;
-			}
-		}*/
 	}
 
 	return false;
@@ -238,12 +233,19 @@ void Graph::_reset_bees()
 {
 	double total_vision = 0;
 	double total_speed = 0;
-	for (Bee* bee : this->bees_out_of_game) {
+	//check if this works
+	std::sort(this->bees_out_of_game.begin(), this->bees_out_of_game.end(), [](const Bee* lhs, const Bee* rhs) { return (lhs->max_speed * lhs->max_vision_range) < (rhs->max_speed * lhs->max_vision_range); });
+	vector<Bee*> cool_bees;
+	for (int i = 0; i < 25; i++) {
+		cool_bees.push_back(this->bees_out_of_game[this->bees_out_of_game.size() - 1 - i]);
+	}
+
+	for (Bee* bee : cool_bees) {
 		total_vision += bee->max_vision_range;
 		total_speed += bee->max_speed;
 	}
-	double average_vision = total_vision / this->bees_out_of_game.size();
-	double average_speed = total_speed / this->bees_out_of_game.size();
+	double average_vision = total_vision / cool_bees.size();
+	double average_speed = total_speed / cool_bees.size();
 
 	for (Bee* bee : this->bees_out_of_game) {
 		bee->SetActive(true);
@@ -495,7 +497,7 @@ void Graph::initGraph()
 	this->addEdge(new Edge(vertex107, vertex109));
 	this->addEdge(new Edge(vertex109, vertex112));
 	this->addEdge(new Edge(vertex112, vertex111));
-	this->addEdge(new Edge(vertex111, vertex111));
+	//this->addEdge(new Edge(vertex111, vertex111));
 	this->addEdge(new Edge(vertex113, vertex112));
 	this->addEdge(new Edge(vertex113, vertex114));
 	this->addEdge(new Edge(vertex114, vertex115));

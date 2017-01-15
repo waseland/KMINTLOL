@@ -48,7 +48,7 @@ public:
 	~FWApplication();
 
 	void SetTargetFPS(unsigned short target);
-
+	size_t get_ticks();
 	////////////////////////////////////////////////////////////////////////////////////////////////////
 	/// <summary>	Gets the window. </summary>
 	///

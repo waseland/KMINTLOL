@@ -29,7 +29,7 @@ int main(int args[])
 	application->SetColor(Color(255, 10, 40, 255));
 	
 	Graph* graph = new Graph();
-
+	SDL_Texture* map = application->LoadTexture("map.png");
 	//while (true){}
 	while (application->IsRunning())
 	{
@@ -51,7 +51,7 @@ int main(int args[])
 			}
 		}
 
-		SDL_Texture* map = application->LoadTexture("map.png");
+		
 		application->DrawTexture(map, 0, 0);
 		
 		application->SetColor(Color(0, 0, 0, 255));
@@ -75,7 +75,13 @@ int main(int args[])
 		//Draw the vertexes
 		
 		for (int j = 0; j < (int)graph->getVertexes().size(); j++) {
-			application->SetColor(Color(0, 0, 255, 255));
+			if (graph->target != nullptr && graph->getVertexes().at(j)->number == graph->target->number) {
+				application->SetColor(Color(255, 255, 255, 255));
+			}
+			else {
+				application->SetColor(Color(0, 0, 255, 255));
+			}
+			
 			application->DrawCircle(graph->getVertexes().at(j)->getXCoord(), graph->getVertexes().at(j)->getYCoord(), 10, true);
 			if (debug) { //if debug, write the number of the vertex in it
 				application->SetColor(Color(255, 255, 255, 255));
@@ -87,13 +93,16 @@ int main(int args[])
 			application->SetColor(Color(0, 0, 255, 255));
 			application->DrawText("Normal", 700, 125);
 		}
-
+		application->SetColor(Color(255, 255, 255, 255));
+		application->DrawText("ReturnHomeChance " + std::to_string(graph->fsm->ReturnHomeChance * 100) + "%", 100, 50);
+		application->DrawText("GetPowerChance " + std::to_string(graph->fsm->GetPowerUpChance * 100) + "%", 100, 70);
+		application->DrawText("IdleChance " + std::to_string(graph->fsm->GetIdleChance * 100) + "%", 100, 90);
 		// For the background
 		application->SetColor(Color(255, 255, 255, 255));
 		graph->Update();
 		application->UpdateGameObjects();
 		application->RenderGameObjects();
-		SDL_DestroyTexture(map);
+		application->DrawText(std::to_string(graph->bees.size()) + " bees in the field", 542, 590);
 		application->EndTick();
 	}
 		

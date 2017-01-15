@@ -6,6 +6,7 @@ BeekeeperIdleState::BeekeeperIdleState(Beekeeper* beekeeper)
 	: IBeekeeperState(beekeeper)
 {
 	this->name = "Beekeeper idling";
+	std::cout << "Losing bee's" << std::endl;
 
 	this->_beekeeper->_target_random_neighbour();
 }

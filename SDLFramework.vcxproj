@@ -84,6 +84,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="FSM\FSM.cpp" />
+    <ClCompile Include="States\BeekeeperPowerUpState.cpp" />
+    <ClCompile Include="Entities\BeekeeperPowerUp.cpp" />
     <ClCompile Include="States\BeekeeperGetPowerUpState.cpp" />
     <ClCompile Include="States\BeekeeperCatchState.cpp" />
     <ClCompile Include="States\BeekeeperIdleState.cpp" />
@@ -107,6 +110,9 @@
     <None Include="SDL2.dll" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="FSM\FSM.h" />
+    <ClInclude Include="States\BeekeeperPowerUpState.h" />
+    <ClInclude Include="Entities\BeekeeperPowerUp.h" />
     <ClInclude Include="States\BeekeeperGetPowerUpState.h" />
     <ClInclude Include="States\BeekeeperCatchState.h" />
     <ClInclude Include="States\BeekeeperIdleState.h" />

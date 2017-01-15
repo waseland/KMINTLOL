@@ -96,7 +96,6 @@ size_t CatchingArea::bees_in_net()
 
 void CatchingArea::clear()
 {
-	// We dump bees in BeeField::bees_out_of_game
 	vector<Bee*>& target = this->_beekeeper->_graph->bees_out_of_game;
 	target.insert(target.end(), this->caught_bees.begin(), this->caught_bees.end());
 	this->caught_bees.clear();
@@ -106,6 +105,7 @@ void CatchingArea::lose_bee()
 {
 	if (this->caught_bees.size() > 0) {
 		this->caught_bees[0]->get_set_free(*this);
+		std::cout << "Beekeeper lost a bee, " << this->caught_bees.size() << " left in the net." << std::endl;
 	}
 }
 

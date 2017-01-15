@@ -11,6 +11,7 @@
 #include "../Entities/Bee.h"
 #include "ConnectedVertex.h"
 #include <list>
+#include "../FSM/FSM.h"
 
 using std::vector;
 
@@ -19,6 +20,7 @@ class Vertex;
 class Edge;
 class Bee;
 struct ConnectedVertex;
+class BeekeeperPowerUp;
 
 class Graph
 {
@@ -44,6 +46,10 @@ public:
 	
 	static float calculate_raw_distance_between_vertici(Vertex* first, Vertex* second);
 	Vertex* get_vertex_closest_to_point(CoordinateDouble pos);
+
+	BeekeeperPowerUp* beekeeper_power_up; 
+	Vertex* target = nullptr;
+	FSM* fsm;
 
 private:
 

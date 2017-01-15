@@ -8,7 +8,8 @@
 	#include "../States/BeekeeperReturnHomeState.h"
 	#include "../States/BeekeeperIdleState.h"
 	#include "../States/BeekeeperCatchState.h"
-	#include "../States//BeekeeperCatchState.h"
+	#include "../States/BeekeeperGetPowerUpState.h"
+	#include "../States/BeekeeperPowerUpState.h"
 
 	class Graph;
 	struct CoordinateDouble;
@@ -21,6 +22,7 @@
 		friend class BeekeeperIdleState;
 		friend class BeekeeperCatchState;
 		friend class BeekeeperGetPowerUpState;
+		friend class BeekeeperPowerUpState;
 	public:
 		Beekeeper(Graph* graph, Vertex* start_vertex);
 		~Beekeeper();
@@ -33,14 +35,23 @@
 
 		void set_state(IBeekeeperState* next_state);
 
+		void power_up();
+		void remove_power_up();
+
 		CatchingArea catchingarea;
 
 		Graph* _graph;
 		Vertex* current_vertex;
 		Vertex* target_vertex = nullptr;
+
+		size_t previous_ticks = mApplication->get_ticks();
+		double total_fitness;
+		size_t rounds;
 	
 	private: 
-		const int speed = 700;
+		int speed = 100;
+		const int usual_speed = 100;
+		const int power_up_speed = 300;
 		SDL_Texture *texture;
 
 		std::deque<Vertex*> _path;

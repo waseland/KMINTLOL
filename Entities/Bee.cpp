@@ -76,9 +76,6 @@ void Bee::get_set_free(CatchingArea& net)
 {
 	this->SetActive(true);
 
-	// Set our position to the net's position
-	this->pos = net.get_position();
-
 	// Move bee from net to Beefield's bees
 	this->_graph->bees.push_back(this);
 

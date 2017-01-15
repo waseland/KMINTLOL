@@ -156,6 +156,11 @@ void FWApplication::StartTick()
 	//}
 }
 
+
+size_t FWApplication::get_ticks() {
+	return SDL_GetTicks();
+}
+
 void FWApplication::EndTick()
 {
 	SDL_RenderPresent(mRenderer);

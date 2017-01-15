@@ -2,11 +2,12 @@
 #include "BeekeeperGetPowerUpState.h"
 #include "../Entities/Beekeeper.h"
 #include "../Domain/Graph.h"
-//#include "../../Powerup/Powerup.hpp"
+#include "../Entities/BeekeeperPowerUp.h"
 
 BeekeeperGetPowerUpState::BeekeeperGetPowerUpState(Beekeeper* beekeeper)
 	: IBeekeeperState(beekeeper)
 {
+	std::cout << "Getting power up" << std::endl;
 	this->_set_path_to_powerup();
 }
 
@@ -22,7 +23,7 @@ void BeekeeperGetPowerUpState::update(float delta_time)
 		else {
 			// Hey, the path is empty and we've arrived at the target vector!
 			this->_arrived_at_powerup();
-			//this->_beekeeper->set_state(new BeeKeeperSuperState(this->_beekeeper));
+			this->_beekeeper->set_state(new BeekeeperPowerUpState(this->_beekeeper));
 		}
 	}
 	else {
@@ -32,13 +33,17 @@ void BeekeeperGetPowerUpState::update(float delta_time)
 
 void BeekeeperGetPowerUpState::_set_path_to_powerup()
 {
-	//vector<Vertex*> proposed_path = Pathfinding::astar(this->_beekeeper->field.field, this->_beekeeper->current_vertex, this->_beekeeper->field.powerup->current_position);
-	//this->_beekeeper->_path = std::deque<Vertex*>(proposed_path.begin(), proposed_path.end());
+	this->_beekeeper->_graph->target = this->_beekeeper->_graph->beekeeper_power_up->position;
+	vector<Vertex*> proposed_path = Graph::find_path(*this->_beekeeper->_graph, this->_beekeeper->current_vertex, this->_beekeeper->_graph->beekeeper_power_up->position);
+	this->_beekeeper->_path = std::deque<Vertex*>(proposed_path.begin(), proposed_path.end());
 }
 
 void BeekeeperGetPowerUpState::_arrived_at_powerup()
 {
-	//this->_beekeeper->field.powerup->jump_to_random_vector();
-	// According to specs, we have to empty net upon powerup
-	this->_beekeeper->catchingarea.clear();
+	this->_beekeeper->_graph->beekeeper_power_up->Move();
+	for (Bee* bee : this->_beekeeper->catchingarea.caught_bees) {
+		bee->SetActive(false);
+		this->_beekeeper->_graph->bees_out_of_game.push_back(bee);
+	}
+	this->_beekeeper->catchingarea.caught_bees.clear();
 }
